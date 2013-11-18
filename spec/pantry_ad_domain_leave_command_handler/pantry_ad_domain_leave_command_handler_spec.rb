@@ -6,6 +6,7 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
   let(:config) { 
     {
       "ad" => {
+        "domain"    => "domain",
         "username"  => "username",
         "password"  => "passwword"
       },
@@ -16,7 +17,7 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
   let(:logger)        { instance_double("Wonga::Daemon::Logger").as_null_object }
   let(:publisher)     { instance_double("Wonga::Daemon::Publisher").as_null_object }
 
-  subject { described_class.new(config, publisher) }
+  subject { described_class.new(config, publisher, logger) }
 
   it_behaves_like 'handler'
 
