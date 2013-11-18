@@ -3,7 +3,8 @@ require 'wonga/daemon/win_rm_runner'
 module Wonga
   module Daemon
     class PantryAdDomainLeaveCommandHandler
-      def initialize(config, publisher)
+      def initialize(config, publisher, logger)
+        @logger       = logger
         @publisher    = publisher        
         @config       = config
         @ad_domain    = config["ad"]["domain"]
