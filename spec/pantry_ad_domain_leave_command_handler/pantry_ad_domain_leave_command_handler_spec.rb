@@ -11,11 +11,11 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
   let(:config) { 
     {
       "ad" => {
-        "domain"    => "domain",
-        "username"  => "username",
-        "password"  => "passwword"
+        "domain"      => "domain",
+        "username"    => "username",
+        "password"    => "passwword",
+        "name_server" => "ns.example.com"
       },
-      "name_server" => "ns.example.com"
     }
   }
   let(:win_rm_runner) { instance_double("Wonga::Daemon::WinRMRunner").as_null_object }

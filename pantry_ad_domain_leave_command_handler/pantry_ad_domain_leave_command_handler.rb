@@ -22,8 +22,8 @@ module Wonga
           resolver  = Resolv::DNS.new
           resolver.getresource(
             domain, 
-            Resolv::DNS::Resource::IN::NS
-          ).name
+            Resolv::DNS::Resource::IN::A
+          ).address.to_s
         else
           name_server
         end
@@ -37,7 +37,7 @@ module Wonga
 
       def leave_domain(message)
         runner  = WinRMRunner.new
-        name_server = get_name_server(@config["name_server"], message["domain"])
+        name_server = get_name_server(@config["ad"]["name_server"], message["domain"])
         runner.add_host(
           name_server, 
           @config['ad']['username'], 
