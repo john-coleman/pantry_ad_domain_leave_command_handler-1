@@ -22,30 +22,33 @@ module Wonga
           resolver  = Resolv::DNS.new
           resolver.getresource(
             domain, 
-            Resolv::DNS::Resource::IN::NS
-          ).name
+            Resolv::DNS::Resource::IN::A
+          ).address.to_s
         else
           name_server
         end
       end
 
+      def dc_from_domain(domain)
+        domain.split(".").map {
+          |x| "DC=" + x
+        }.join(",")
+      end
+
       def leave_domain(message)
         runner  = WinRMRunner.new
-        name_server = get_name_server(@config["name_server"], message["domain"])
+        name_server = get_name_server(@config["ad"]["name_server"], message["domain"])
         runner.add_host(
           name_server, 
           @config['ad']['username'], 
           @config['ad']['password']
         )
-        if message.has_key?('ad_ou')
-          ad_ou = message['ad_ou']
-          command = "NETDOM REMOVE /Domain:#{message["domain"]} #{message["hostname"]}.#{message["domain"]} /OU:'#{ad_ou}' /UserD:#{@ad_domain}\\#{@ad_user} /PasswordD:\"#{@ad_password}\" & echo ERRORLEVEL: %ERRORLEVEL%"
-        else
-          command = "NETDOM REMOVE /Domain:#{message["domain"]} #{message["hostname"]}.#{message["domain"]} /UserD:#{@ad_domain}\\#{@ad_user} /PasswordD:\"#{@ad_password}\" & echo ERRORLEVEL: %ERRORLEVEL%"
-        end        
+        dc_string = dc_from_domain(message["domain"])
+        command = "dsrm -noprompt \"CN=#{message["hostname"]},CN=Computers,#{dc_string}\""
+        @logger.info("Executing command: #{command}")
         runner.run_commands(command) do |cmd, ret_val|
-          unless ret_val.includes? "Command completed successfully" 
-            logger.error(ret_val)
+          unless ret_val.includes? "dsrm succeeded" 
+            @logger.error(ret_val)
           end
         end
       end

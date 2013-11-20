@@ -1,4 +1,9 @@
 development:
+  ad:
+    domain:   AWS
+    password: alkdjfldas
+    username: ladfjdslad
+    name_server: some.server.example.com
   aws:
     access_key_id: some_aws_iam_access_key_id
     secret_access_key: some_aws_iam_secret_access_key
@@ -19,6 +24,11 @@ development:
     topic_arn: daemon_specific_topic_arn
     error_arn: daemon_specific_error_arn
 test:
+  ad:
+    domain:   AWS
+    password: alkdjfldas
+    username: ladfjdslad
+    name_server: some.server.example.com
   aws:
     access_key_id: some_aws_iam_access_key_id
     secret_access_key: some_aws_iam_secret_access_key
@@ -43,6 +53,11 @@ test:
     topic_arn: daemon_specific_topic_arn
     error_arn: daemon_specific_error_arn
 production:
+  ad:
+    domain:   AWS
+    password: alkdjfldas
+    username: ladfjdslad
+    name_server: some.server.example.com
   aws:
     access_key_id: some_aws_iam_access_key_id
     secret_access_key: some_aws_iam_secret_access_key
