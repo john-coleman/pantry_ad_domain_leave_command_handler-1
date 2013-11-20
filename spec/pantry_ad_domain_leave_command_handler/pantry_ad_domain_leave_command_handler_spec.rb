@@ -2,7 +2,12 @@ require 'spec_helper'
 require_relative '../../pantry_ad_domain_leave_command_handler/pantry_ad_domain_leave_command_handler'
 
 describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
-  let(:message) { { "domain"    => "domain" } } 
+  let(:message) { 
+    { 
+      "domain"    => "a.b.c",
+      "hostname"  => "hostname"
+    } 
+  } 
   let(:config) { 
     {
       "ad" => {
@@ -21,6 +26,12 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
 
   it_behaves_like 'handler'
 
+  describe "#dc_from_domain" do 
+    it "takes a domain and returns the appropriate dc string" do
+      expect(subject.dc_from_domain("example.com")).to eq("DC=aws,DC=wonga,DC=com")
+    end
+  end
+
   describe "#handle_message" do
     before(:each) do 
       win_rm_runner.stub(:run_commands).and_return("Command completed successfully")
@@ -30,7 +41,9 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
 
     it "Receives a message and removes the machine from the domain" do
       subject.handle_message(message)
-      expect(win_rm_runner).to have_received(:run_commands)
+      expect(win_rm_runner).to have_received(:run_commands).with(
+        "dsrm -noprompt \"CN=hostname,CN=Computers,DC=a,DC=b,DC=c\""
+      )
       expect(logger).not_to have_received(:error)
     end
   end
@@ -38,7 +51,7 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
   describe "get_name_server" do
     it "should return a name server from config file" do
       resolver = Resolv::DNS.stub(:new).and_return(instance_double('Resolv::DNS').as_null_object)
-      subject.get_name_server('a_server', 'aws.example.com').should == 'a_server'
+      subject.get_name_server('a_server', 'example.com').should == 'a_server'
     end
   end
 end
