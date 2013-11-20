@@ -47,9 +47,10 @@ module Wonga
         command = "dsrm -noprompt \"CN=#{message["hostname"]},CN=Computers,#{dc_string}\""
         @logger.info("Executing command: #{command}")
         runner.run_commands(command) do |cmd, ret_val|
-          unless ret_val.includes? "dsrm succeeded" 
-            @logger.error(ret_val)
+          unless ret_val.include? "dsrm succeeded" or ret_val.include? "object not found"
+            raise "Incorrect response encountered: #{ret_val}"
           end
+          @logger.info("WinRM returned: #{ret_val}")
         end
       end
     end
