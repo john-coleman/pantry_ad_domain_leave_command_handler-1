@@ -1,5 +1,6 @@
 <%= @app_environment %>:
 <% @daemon_dir = @config["daemon"]["dir"] || @dir %>
+  name_server: <%= @config["name_server"] %>
   aws:
     access_key_id: <%= @config["aws"]["config"]["access_key_id"] %>
     secret_access_key: <%= @config["aws"]["config"]["secret_access_key"] %>
