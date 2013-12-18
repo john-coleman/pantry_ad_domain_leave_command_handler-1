@@ -5,16 +5,16 @@ module Wonga
     class PantryAdDomainLeaveCommandHandler
       def initialize(config, publisher, logger)
         @logger       = logger
-        @publisher    = publisher        
+        @publisher    = publisher
         @config       = config
         @ad_domain    = config["ad"]["domain"]
         @ad_user      = config["ad"]["username"]
-        @ad_password  = config["ad"]["password"]      
+        @ad_password  = config["ad"]["password"]
       end
 
       def handle_message(message)
         leave_domain(message)
-        @publisher.publish(message)              
+        @publisher.publish(message)
       end
 
       def get_name_server(name_server, domain)
@@ -46,8 +46,10 @@ module Wonga
         dc_string = dc_from_domain(message["domain"])
         command = "dsrm -noprompt \"CN=#{message["hostname"]},CN=Computers,#{dc_string}\""
         @logger.info("Executing command: #{command}")
+        object_not_found = false
         runner.run_commands(command) do |cmd, ret_val|
-          unless ret_val.include? "dsrm succeeded" or ret_val.include? "object not found"
+          object_not_found ||= ret_val["object not found"]
+          unless ret_val["dsrm succeeded"] || object_not_found
             raise "Incorrect response encountered: #{ret_val}"
           end
           @logger.info("WinRM returned: #{ret_val}")
