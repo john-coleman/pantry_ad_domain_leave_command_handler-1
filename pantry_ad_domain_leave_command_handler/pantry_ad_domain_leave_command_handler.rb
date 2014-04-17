@@ -39,12 +39,12 @@ module Wonga
         runner  = WinRMRunner.new
         name_server = get_name_server(@config["ad"]["name_server"], message["domain"])
         runner.add_host(
-          name_server, 
-          @config['ad']['username'], 
+          name_server,
+          @config['ad']['username'],
           @config['ad']['password']
         )
         dc_string = dc_from_domain(message["domain"])
-        command = "dsrm -noprompt \"CN=#{message["hostname"]},CN=Computers,#{dc_string}\""
+        command = "dsrm -noprompt \"CN=#{message["hostname"][0..14]},CN=Computers,#{dc_string}\""
         @logger.info("Executing command: #{command}")
         object_not_found = false
         runner.run_commands(command) do |cmd, ret_val|
