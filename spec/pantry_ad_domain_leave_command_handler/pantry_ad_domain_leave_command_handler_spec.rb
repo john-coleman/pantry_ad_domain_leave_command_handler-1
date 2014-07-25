@@ -36,9 +36,9 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
 
   describe "#handle_message" do
     before(:each) do
-      win_rm_runner.stub(:run_commands).and_return("Command completed successfully")
-      win_rm_runner.stub(:add_host).and_return(win_rm_runner)
-      Wonga::Daemon::WinRMRunner.stub(:new).and_return(win_rm_runner)
+      allow(win_rm_runner).to receive(:run_commands).and_return("Command completed successfully")
+      allow(win_rm_runner).to receive(:add_host).and_return(win_rm_runner)
+      allow(Wonga::Daemon::WinRMRunner).to receive(:new).and_return(win_rm_runner)
     end
 
     it "Receives a message and removes the machine from the domain" do
@@ -69,8 +69,8 @@ describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
 
   describe "get_name_server" do
     it "should return a name server from config file" do
-      resolver = Resolv::DNS.stub(:new).and_return(instance_double('Resolv::DNS').as_null_object)
-      subject.get_name_server('a_server', 'example.com').should == 'a_server'
+      resolver = allow(Resolv::DNS).to receive(:new).and_return(instance_double('Resolv::DNS').as_null_object)
+      expect(subject.get_name_server('a_server', 'example.com')).to eq('a_server')
     end
   end
 end
