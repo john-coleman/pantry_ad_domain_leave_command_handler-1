@@ -4,8 +4,8 @@ require_relative '../../pantry_ad_domain_leave_command_handler/pantry_ad_domain_
 RSpec.describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
   let(:message) do
     {
-      'domain'    => 'a.b.c',
-      'hostname'  => 'hostname'
+      'domain'      => 'a.b.c',
+      'hostname'    => 'hostname'
     }
   end
 
@@ -30,7 +30,7 @@ RSpec.describe Wonga::Daemon::PantryAdDomainLeaveCommandHandler do
 
   describe '#dc_from_domain' do
     it 'takes a domain and returns the appropriate dc string' do
-      expect(subject.dc_from_domain('example.com')).to eq('DC=aws,DC=wonga,DC=com')
+      expect(subject.dc_from_domain('example.com')).to eq('DC=example,DC=com')
     end
   end
 
